@@ -30,8 +30,8 @@ public:
 	int getPositions(int x, int y);
 
 private:
-	int num_ice = 3616;
-	Ice *iceObject[3616];
+	int num_ice = 3840; // 60x64 grid
+	Ice *iceObject[3840];
 	Iceman *iceManObject;
 	vector<Actor *> Actors;
 	char Positions[64][64];
