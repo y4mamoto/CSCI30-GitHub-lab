@@ -3,6 +3,7 @@
 
 #include "GameWorld.h"
 #include "GameConstants.h"
+#include "GameController.h"
 #include <string>
 #include "Actor.h"
 #include <vector>
@@ -26,15 +27,14 @@ public:
 
 	virtual void cleanUp();
 
-	void setPositions(int x, int y, char actorName);
-	int getPositions(int x, int y);
+	virtual bool removeIce(int x, int y);
+
+	virtual bool iceCheck(int x, int y, GraphObject::Direction);
 
 private:
-	int num_ice = 3840; // 60x64 grid
-	Ice *iceObject[3840];
+	Ice *iceObject[64][60];
 	Iceman *iceManObject;
 	vector<Actor *> Actors;
-	char Positions[64][64];
 };
 
 #endif // STUDENTWORLD_H_

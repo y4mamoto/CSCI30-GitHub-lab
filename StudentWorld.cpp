@@ -13,18 +13,12 @@ GameWorld *createStudentWorld(string assetDir)
 
 int StudentWorld::init()
 { // Setup the level
-	/*for(int i = 0; i < num_ice;i++){
-		 for (int x = 0 ; x < 64; x++){
-			 for(int y = 0; x < 60 ; y++){
-				 iceObject[i] = new Ice(x,y,this);
-			 }
-		 }
-	 }
+	for (int x = 0; x < 64; x++)
+		for (int y = 0; y < 60; y++)
+		{
+			iceObject[x][y] = new Ice(x, y, this);
+		}
 
-	 for (int x = 30 ; x != 34; x++){
-		 for (int y = 4; y !=60 ;y++)
-			 Positions[x][y] = 't';
-	 }*/
 	iceManObject = new Iceman(30, 60, this);
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -35,7 +29,7 @@ int StudentWorld::move()
 	{
 		iceManObject->dosomething();
 	}
-	if (!iceManObject->aliveCheck())
+	if (iceManObject->deadCheck())
 	{
 		decLives();
 		return GWSTATUS_PLAYER_DIED;
@@ -46,22 +40,76 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp() // Delete the entire level after it is finish
 {
-	for (int i = 0; i < num_ice; i++)
-	{
-		if (iceObject[i] != nullptr)
+	for (int x = 0; x < 64; x++)
+		for (int y = 0; y < 60; y++)
 		{
-			delete iceObject[i];
-			iceObject[i] = nullptr;
+			if (iceObject[x][y] != nullptr)
+			{
+				delete iceObject[x][y];
+				iceObject[x][y] = nullptr;
+			}
 		}
+
+	delete iceManObject;
+}
+
+bool StudentWorld::iceCheck(int x, int y, GraphObject::Direction dir)
+{
+	switch (dir)
+	{
+	case GraphObject::up:
+		for (int i = 0; i < 64; i++)
+			for (int j = 0; j < 60; j++)
+			{
+				if (iceObject[i][j] != nullptr)
+					if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() == y + 3)
+						return true;
+			}
+		break;
+
+	case GraphObject::down:
+		for (int i = 0; i < 64; i++)
+			for (int j = 0; j < 60; j++)
+			{
+				if (iceObject[i][j] != nullptr)
+					if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() == y)
+						return true;
+			}
+		break;
+
+	case GraphObject::left:
+		for (int i = 0; i < 64; i++)
+			for (int j = 0; j < 60; j++)
+			{
+				if (iceObject[i][j]->getX() == x && iceObject[i][j]->getY() <= y && iceObject[i][j]->getY() <= y + 3)
+					return true;
+			}
+		break;
+	case GraphObject::right:
+		for (int i = 0; i < 64; i++)
+			for (int j = 0; j < 60; j++)
+			{
+				if (iceObject[i][j]->getX() == x + 3 && iceObject[i][j]->getY() <= y && iceObject[i][j]->getY() <= y + 3)
+					return true;
+			}
+		break;
 	}
+
+	return false;
 }
 
-/*void StudentWorld::setPositions(int x, int y, char actorName){
-	for (int i = x ; i!= x + 4; x++)
-		for (int j = y; j!=y+4; j++)
-			Positions[i][j] = actorName;
+bool StudentWorld::removeIce(int x, int y)
+{
+	for (int i = 0; i < 64; i++)
+		for (int j = 0; j < 60; j++)
+		{
+			if (iceObject[i][j] != nullptr)
+				if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() >= y && iceObject[i][j]->getY() <= y + 3)
+				{
+					delete iceObject[i][j];
+					iceObject[i][j] = nullptr;
+					return true;
+				}
+		}
+	return false;
 }
-
-int StudentWorld::getPositions(int x, int y){
-	return Positions[x][y];
-} */

@@ -1,10 +1,12 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 
+using namespace std;
+
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 
 void Person::setHealth(int health)
-{
+{ // Set the health
     num_health = health;
 }
 
@@ -14,15 +16,20 @@ int Person::getHealth()
 }
 
 void Person::damage(int val)
-{
+{ // Character take damage
     num_health -= val;
 }
 
 void Iceman::dosomething()
 {
+    if (deadCheck()) // Check if iceman is dead
+        return;
+
+    getWorld()->removeIce(getX(), getY()); // Remove the ice
+
     int ch;
     if (getWorld()->getKey(ch) == true)
-    {
+    { // Movement from user input
         switch (ch)
         {
         case KEY_PRESS_LEFT:
@@ -62,16 +69,26 @@ void Iceman::dosomething()
             else if (getY() == 0)
                 moveTo(getX(), getY());
             break;
+        case KEY_PRESS_ESCAPE: // Press escape to give up the level
+            // User giveup
+            setDead();
+            break;
         }
     }
 }
 
-void Iceman::giveup()
-{
-    alive = false; // dead
-}
-
-bool Iceman::aliveCheck()
+bool Person::aliveCheck()
 {
     return alive;
+}
+
+bool Person::deadCheck()
+{
+    return dead;
+}
+
+void Person::setDead()
+{
+    alive = false;
+    dead = true;
 }

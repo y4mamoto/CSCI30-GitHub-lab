@@ -19,6 +19,8 @@ public:
         return world;
     }
 
+    virtual ~Actor() { ; }
+
     virtual void dosomething() = 0;
 
 private:
@@ -31,14 +33,21 @@ public:
     Person(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *newWorld) : Actor(imageID, startX, startY, startDirection, size, depth, newWorld)
     {
         setVisible(true);
+        alive = true;
+        dead = false;
     }
 
     virtual void setHealth(int health);
     virtual int getHealth();
     virtual void damage(int val);
+    virtual bool aliveCheck();
+    virtual bool deadCheck();
+    virtual void setDead();
 
 private:
     int num_health;
+    bool alive;
+    bool dead;
 };
 
 class Iceman : public Person
@@ -47,13 +56,9 @@ public:
     Iceman(int startX, int startY, StudentWorld *World) : Person(IID_PLAYER, startX, startY, right, 1.0, 0, World)
     {
         setVisible(true);
+        setHealth(10);
     }
     virtual void dosomething();
-    virtual void giveup();
-    virtual bool aliveCheck();
-
-private:
-    bool alive;
 };
 
 class Ice : public Actor
