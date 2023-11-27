@@ -13,22 +13,26 @@ GameWorld *createStudentWorld(string assetDir)
 
 int StudentWorld::init()
 { // Setup the level
+
+	// Create the map with ice
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 60; y++)
 		{
 			iceObject[x][y] = new Ice(x, y, this);
 		}
 
-	iceManObject = new Iceman(30, 60, this);
+	iceManObject = new Iceman(30, 60, this); // Create Iceman
 	return GWSTATUS_CONTINUE_GAME;
 }
 
 int StudentWorld::move()
 { // Middle of the level
+	// Check if Iceman is alive, then dosomething will be called
 	if (iceManObject->aliveCheck())
 	{
 		iceManObject->dosomething();
 	}
+	// Check if Iceman is dead, if true end the level and decrement a life
 	if (iceManObject->deadCheck())
 	{
 		decLives();
@@ -40,6 +44,7 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp() // Delete the entire level after it is finish
 {
+	// Delete Remaining Ice of the level
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 60; y++)
 		{
@@ -50,54 +55,10 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 			}
 		}
 
-	delete iceManObject;
+	delete iceManObject; // Delete Iceman
 }
 
-bool StudentWorld::iceCheck(int x, int y, GraphObject::Direction dir)
-{
-	switch (dir)
-	{
-	case GraphObject::up:
-		for (int i = 0; i < 64; i++)
-			for (int j = 0; j < 60; j++)
-			{
-				if (iceObject[i][j] != nullptr)
-					if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() == y + 3)
-						return true;
-			}
-		break;
-
-	case GraphObject::down:
-		for (int i = 0; i < 64; i++)
-			for (int j = 0; j < 60; j++)
-			{
-				if (iceObject[i][j] != nullptr)
-					if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() == y)
-						return true;
-			}
-		break;
-
-	case GraphObject::left:
-		for (int i = 0; i < 64; i++)
-			for (int j = 0; j < 60; j++)
-			{
-				if (iceObject[i][j]->getX() == x && iceObject[i][j]->getY() <= y && iceObject[i][j]->getY() <= y + 3)
-					return true;
-			}
-		break;
-	case GraphObject::right:
-		for (int i = 0; i < 64; i++)
-			for (int j = 0; j < 60; j++)
-			{
-				if (iceObject[i][j]->getX() == x + 3 && iceObject[i][j]->getY() <= y && iceObject[i][j]->getY() <= y + 3)
-					return true;
-			}
-		break;
-	}
-
-	return false;
-}
-
+// Function that remove the ice when the player comes into contact of ice
 bool StudentWorld::removeIce(int x, int y)
 {
 	for (int i = 0; i < 64; i++)

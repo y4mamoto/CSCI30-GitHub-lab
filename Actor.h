@@ -6,6 +6,7 @@ class StudentWorld;
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 
+// Actor class, base class
 class Actor : public GraphObject
 {
 public:
@@ -19,7 +20,7 @@ public:
         return world;
     }
 
-    virtual ~Actor() { ; }
+    virtual ~Actor() {}
 
     virtual void dosomething() = 0;
 
@@ -27,6 +28,7 @@ private:
     StudentWorld *world;
 };
 
+// Person class for anything that can move
 class Person : public Actor
 {
 public:
@@ -50,6 +52,7 @@ private:
     bool dead;
 };
 
+// Iceman class, the player
 class Iceman : public Person
 {
 public:
@@ -61,6 +64,7 @@ public:
     virtual void dosomething();
 };
 
+// Ice class
 class Ice : public Actor
 { // Ice does not do anything so just the constructor is fine
 public:
