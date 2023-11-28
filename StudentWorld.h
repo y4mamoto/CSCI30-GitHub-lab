@@ -21,6 +21,8 @@ public:
 	{
 	}
 
+	virtual ~StudentWorld() {}
+
 	virtual int init();
 
 	virtual int move();
