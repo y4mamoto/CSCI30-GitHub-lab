@@ -2,6 +2,7 @@
 #include "GameWorld.h"
 #include "GameConstants.h"
 #include <string>
+#include <cmath>
 using namespace std;
 
 GameWorld *createStudentWorld(string assetDir)
@@ -72,5 +73,15 @@ bool StudentWorld::removeIce(int x, int y)
 					return true;
 				}
 		}
+	return false;
+}
+
+bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
+{
+	int priorRadiusCalc;
+	priorRadiusCalc = pow(iceManObject->getX() - x, 2) + pow(iceManObject->getY() - y, 2);
+	if (sqrt(priorRadiusCalc) <= radius)
+		return true;
+
 	return false;
 }

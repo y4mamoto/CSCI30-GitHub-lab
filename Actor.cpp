@@ -1,23 +1,63 @@
 #include "Actor.h"
 #include "StudentWorld.h"
+#include "GameController.h"
+#include "GameWorld.h"
+#include <algorithm>
+#include <utility>
 
 using namespace std;
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
+bool Actor::aliveCheck()
+{
+    return alive;
+}
 
-void Person::setHealth(int health)
+bool Actor::deadCheck()
+{
+    return dead;
+}
+
+void Actor::setDead()
+{
+    alive = false;
+    dead = true;
+}
+
+void Actor::setAlive()
+{
+    alive = true;
+    dead = false;
+}
+
+void Agent::setHealth(int health)
 { // Set the health
     num_health = health;
 }
 
-int Person::getHealth()
+int Agent::getHealth()
 {
     return num_health;
 }
 
-void Person::damage(int val)
+void Agent::damage(int val)
 { // Character take damage
     num_health -= val;
+}
+
+void ActivatingObject::setPickup(bool pickup)
+{
+    pickable = pickup;
+}
+
+bool ActivatingObject::isVisible()
+{
+    return visible;
+}
+
+bool ActivatingObject::isPickable()
+{
+    return pickable;
 }
 
 void Iceman::dosomething()
@@ -77,18 +117,17 @@ void Iceman::dosomething()
     }
 }
 
-bool Person::aliveCheck()
+void BarrelOfOil::dosomething()
 {
-    return alive;
-}
+    if (deadCheck())
+        return;
 
-bool Person::deadCheck()
-{
-    return dead;
-}
-
-void Person::setDead()
-{
-    alive = false;
-    dead = true;
+    if (getWorld()->nearIcemanCheck(getX(), getY(), 4))
+        setVisible(true);
+    if (getWorld()->nearIcemanCheck(getX(), getY(), 3))
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_FOUND_OIL);
+        // GameWorld::increaseScore(1000);
+    }
 }

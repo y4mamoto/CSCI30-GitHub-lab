@@ -2,6 +2,7 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
+
 class StudentWorld;
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
@@ -21,45 +22,46 @@ public:
     }
 
     virtual ~Actor() {}
+    virtual bool aliveCheck();
+    virtual bool deadCheck();
+    virtual void setDead();
+    virtual void setAlive();
 
     virtual void dosomething() = 0;
 
 private:
     StudentWorld *world;
+    bool alive;
+    bool dead;
 };
 
 // Person class for anything that can move
-class Person : public Actor
+class Agent : public Actor
 {
 public:
-    Person(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *newWorld) : Actor(imageID, startX, startY, startDirection, size, depth, newWorld)
+    Agent(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *newWorld) : Actor(imageID, startX, startY, startDirection, size, depth, newWorld)
     {
         setVisible(true);
-        alive = true;
-        dead = false;
     }
 
     virtual void setHealth(int health);
     virtual int getHealth();
     virtual void damage(int val);
-    virtual bool aliveCheck();
-    virtual bool deadCheck();
-    virtual void setDead();
 
 private:
     int num_health;
-    bool alive;
-    bool dead;
 };
 
-class Items : public Actor
+class ActivatingObject : public Actor
 {
 public:
-    Items(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *newWorld) : Actor(imageID, startX, startY, startDirection, size, depth, newWorld) {}
+    ActivatingObject(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *World, int soundToPlay, bool activateOnPlayer, bool activateOnProtester, bool initallyActive);
 
     bool isVisible();
     bool isPickable();
     void setPickup(bool pickup);
+
+    void setTicksToLive();
 
 private:
     bool visible;
@@ -67,10 +69,10 @@ private:
 };
 
 // Iceman class, the player
-class Iceman : public Person
+class Iceman : public Agent
 {
 public:
-    Iceman(int startX, int startY, StudentWorld *World) : Person(IID_PLAYER, startX, startY, right, 1.0, 0, World)
+    Iceman(int startX, int startY, StudentWorld *World) : Agent(IID_PLAYER, startX, startY, right, 1.0, 0, World)
     {
         setVisible(true);
         setHealth(10);
@@ -91,6 +93,16 @@ public:
     virtual ~Ice() {}
 
     virtual void dosomething() {}
+};
+
+class BarrelOfOil : public ActivatingObject
+{
+    BarrelOfOil(int startX, int startY, StudentWorld *world) : ActivatingObject(IID_BARREL, startX, startY, right, 1.0, 2, world, SOUND_FOUND_OIL, true, false, false)
+    {
+        setVisible(false);
+    }
+    virtual void dosomething();
+    virtual bool objectiveItem() const;
 };
 
 #endif // ACTOR_H_

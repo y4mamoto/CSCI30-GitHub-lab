@@ -7,6 +7,7 @@
 #include <string>
 #include "Actor.h"
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -16,10 +17,7 @@ class StudentWorld : public GameWorld
 {
 public:
 	// Generate the level
-	StudentWorld(std::string assetDir)
-		: GameWorld(assetDir)
-	{
-	}
+	StudentWorld(std::string assetDir) : GameWorld(assetDir) {}
 
 	virtual ~StudentWorld() {}
 
@@ -31,7 +29,7 @@ public:
 
 	virtual bool removeIce(int x, int y);
 
-	virtual bool iceCheck(int x, int y, GraphObject::Direction);
+	virtual bool nearIcemanCheck(int x, int y, int radius);
 
 private:
 	Ice *iceObject[64][60];
