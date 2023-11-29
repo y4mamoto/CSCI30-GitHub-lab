@@ -52,6 +52,20 @@ private:
     bool dead;
 };
 
+class Items : public Actor
+{
+public:
+    Items(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *newWorld) : Actor(imageID, startX, startY, startDirection, size, depth, newWorld) {}
+
+    bool isVisible();
+    bool isPickable();
+    void setPickup(bool pickup);
+
+private:
+    bool visible;
+    bool pickable;
+};
+
 // Iceman class, the player
 class Iceman : public Person
 {
@@ -61,6 +75,7 @@ public:
         setVisible(true);
         setHealth(10);
     }
+    virtual ~Iceman() {}
     virtual void dosomething();
 };
 
@@ -73,9 +88,9 @@ public:
         setVisible(true);
     }
 
-    virtual ~Ice(){};
+    virtual ~Ice() {}
 
-    virtual void dosomething() {} // does nothing
+    virtual void dosomething() {}
 };
 
 #endif // ACTOR_H_
