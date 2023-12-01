@@ -15,6 +15,11 @@ GameWorld *createStudentWorld(string assetDir)
 int StudentWorld::init()
 { // Setup the level
 
+	for (int x = 0; x < 64; x++)
+	{
+		if (x % 4 == 0)
+			barrelObject = new BarrelOfOil(x, 30, this);
+	}
 	// Create the map with ice
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 60; y++)
@@ -80,7 +85,7 @@ bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 {
 	int priorRadiusCalc;
 	priorRadiusCalc = pow(iceManObject->getX() - x, 2) + pow(iceManObject->getY() - y, 2);
-	if (sqrt(priorRadiusCalc) <= radius)
+	if (sqrt(priorRadiusCalc) >= radius)
 		return true;
 
 	return false;

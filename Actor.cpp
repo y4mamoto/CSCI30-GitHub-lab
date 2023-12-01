@@ -123,10 +123,13 @@ void BarrelOfOil::dosomething()
         return;
 
     if (getWorld()->nearIcemanCheck(getX(), getY(), 4))
-        setVisible(true);
+    {
+        setVisible(true); // Not Running properly
+    }
     if (getWorld()->nearIcemanCheck(getX(), getY(), 3))
     {
         setDead();
+        setVisible(false);
         GameController::getInstance().playSound(SOUND_FOUND_OIL);
         // GameWorld::increaseScore(1000);
     }

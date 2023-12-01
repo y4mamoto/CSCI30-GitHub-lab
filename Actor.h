@@ -55,7 +55,7 @@ private:
 class ActivatingObject : public Actor
 {
 public:
-    ActivatingObject(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *World, int soundToPlay, bool activateOnPlayer, bool activateOnProtester, bool initallyActive);
+    ActivatingObject(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *World, int soundToPlay, bool activateOnPlayer, bool activateOnProtester, bool initallyActive) : Actor(imageID, startX, startY, startDirection, size, depth, World) {}
 
     bool isVisible();
     bool isPickable();
@@ -76,6 +76,7 @@ public:
     {
         setVisible(true);
         setHealth(10);
+        setAlive();
     }
     virtual ~Iceman() {}
     virtual void dosomething();
@@ -97,12 +98,15 @@ public:
 
 class BarrelOfOil : public ActivatingObject
 {
-    BarrelOfOil(int startX, int startY, StudentWorld *world) : ActivatingObject(IID_BARREL, startX, startY, right, 1.0, 2, world, SOUND_FOUND_OIL, true, false, false)
+public:
+    BarrelOfOil(int startX, int startY, StudentWorld *World) : ActivatingObject(IID_BARREL, startX, startY, right, 1.0, 2, World, SOUND_FOUND_OIL, true, false, false)
     {
         setVisible(false);
+        setAlive();
     }
+    virtual ~BarrelOfOil() {}
     virtual void dosomething();
-    virtual bool objectiveItem() const;
+    // virtual bool objectiveItem() const;
 };
 
 #endif // ACTOR_H_
