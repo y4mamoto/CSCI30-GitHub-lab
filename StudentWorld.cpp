@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include <string>
 #include <cmath>
+#include <vector>
 using namespace std;
 
 GameWorld *createStudentWorld(string assetDir)
@@ -15,11 +16,15 @@ GameWorld *createStudentWorld(string assetDir)
 int StudentWorld::init()
 { // Setup the level
 
-	for (int x = 0; x < 64; x++)
-	{
-		if (x % 4 == 0)
-			barrelObject = new BarrelOfOil(x, 30, this);
-	}
+	/* for (int x = 0; x < 64; x++){
+		 if (x % 4 == 0)
+		 barrelObject = new BarrelOfOil(x, 30, this);
+		 addActor(barrelObject);
+	 }*/
+
+	barrelObject = new BarrelOfOil(30, 30, this);
+	addActor(barrelObject);
+
 	// Create the map with ice
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 60; y++)
@@ -34,6 +39,15 @@ int StudentWorld::init()
 int StudentWorld::move()
 { // Middle of the level
 	// Check if Iceman is alive, then dosomething will be called
+
+	vector<Actor *>::iterator it;
+	for (it = Actors.begin(); it != Actors.end(); it++)
+	{
+		if ((*it)->aliveCheck())
+		{
+			(*it)->dosomething();
+		}
+	}
 	if (iceManObject->aliveCheck())
 	{
 		iceManObject->dosomething();
@@ -45,7 +59,7 @@ int StudentWorld::move()
 		return GWSTATUS_PLAYER_DIED;
 	}
 
-	deleteDeadActor();
+	// deleteDeadActor();
 
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -64,6 +78,15 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 		}
 
 	delete iceManObject; // Delete Iceman
+
+	delete barrelObject;
+
+	/*  vector<Actor*>::iterator it;
+	  for (it = Actors.begin(); it != Actors.end();it++)
+		  {
+			  delete (*it);
+			  it = Actors.erase(it);
+		  }*/
 }
 
 // Function that remove the ice when the player comes into contact of ice
@@ -75,6 +98,7 @@ bool StudentWorld::removeIce(int x, int y)
 			if (iceObject[i][j] != nullptr)
 				if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() >= y && iceObject[i][j]->getY() <= y + 3)
 				{
+					// GameController::getInstance().playSound(SOUND_DIG);
 					delete iceObject[i][j];
 					iceObject[i][j] = nullptr;
 					return true;
@@ -87,7 +111,7 @@ bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 {
 	int priorRadiusCalc;
 	priorRadiusCalc = pow(iceManObject->getX() - x, 2) + pow(iceManObject->getY() - y, 2);
-	if (sqrt(priorRadiusCalc) >= radius)
+	if (sqrt(priorRadiusCalc) <= radius)
 		return true;
 
 	return false;
@@ -97,11 +121,19 @@ void StudentWorld::deleteDeadActor()
 {
 	vector<Actor *>::iterator it;
 	for (it = Actors.begin(); it != Actors.end(); it++)
-		if (!(*it)->aliveCheck())
+		if ((*it)->deadCheck())
 		{
 			delete (*it);
 			it = Actors.erase(it);
 		}
 }
 
-// void StudentWorld::addActor(Actor* a)
+void StudentWorld::addActor(Actor *a)
+{
+	Actors.push_back(a);
+}
+
+void StudentWorld::setDisplayText()
+{ // Will do later
+	return;
+}

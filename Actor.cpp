@@ -65,7 +65,10 @@ void Iceman::dosomething()
     if (deadCheck()) // Check if iceman is dead
         return;
 
+    // getWorld()-> addActor(Actor* iceManObject);
+
     getWorld()->removeIce(getX(), getY()); // Remove the ice
+                                           // GameController::getInstance().playSound(SOUND_DIG);
 
     int ch;
     if (getWorld()->getKey(ch) == true)
@@ -132,5 +135,6 @@ void BarrelOfOil::dosomething()
         setDead();
         GameController::getInstance().playSound(SOUND_FOUND_OIL);
         getWorld()->increaseScore(1000);
+        return;
     }
 }
