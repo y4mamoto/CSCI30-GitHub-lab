@@ -45,6 +45,8 @@ int StudentWorld::move()
 		return GWSTATUS_PLAYER_DIED;
 	}
 
+	deleteDeadActor();
+
 	return GWSTATUS_CONTINUE_GAME;
 }
 
@@ -90,3 +92,16 @@ bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 
 	return false;
 }
+
+void StudentWorld::deleteDeadActor()
+{
+	vector<Actor *>::iterator it;
+	for (it = Actors.begin(); it != Actors.end(); it++)
+		if (!(*it)->aliveCheck())
+		{
+			delete (*it);
+			it = Actors.erase(it);
+		}
+}
+
+// void StudentWorld::addActor(Actor* a)

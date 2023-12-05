@@ -31,10 +31,15 @@ public:
 
 	virtual bool nearIcemanCheck(int x, int y, int radius);
 
+	virtual void deleteDeadActor();
+
+	// virtual void addActor(Actor* a);
+
 private:
 	Ice *iceObject[64][60];
 	Iceman *iceManObject;
 	vector<Actor *> Actors;
+	BarrelOfOil *barrelObject;
 };
 
 #endif // STUDENTWORLD_H_
