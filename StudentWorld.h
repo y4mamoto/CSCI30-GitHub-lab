@@ -33,7 +33,9 @@ public:
 
 	virtual void deleteDeadActor();
 
-	// virtual void addActor(Actor* a);
+	virtual void addActor(Actor *a);
+
+	virtual void setDisplayText();
 
 private:
 	Ice *iceObject[64][60];

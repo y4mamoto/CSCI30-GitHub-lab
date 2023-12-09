@@ -59,7 +59,7 @@ int StudentWorld::move()
 		return GWSTATUS_PLAYER_DIED;
 	}
 
-	// deleteDeadActor();
+	deleteDeadActor();
 
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -68,6 +68,7 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 {
 	// Delete Remaining Ice of the level
 	for (int x = 0; x < 64; x++)
+	{
 		for (int y = 0; y < 60; y++)
 		{
 			if (iceObject[x][y] != nullptr)
@@ -76,17 +77,16 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 				iceObject[x][y] = nullptr;
 			}
 		}
+	}
 
 	delete iceManObject; // Delete Iceman
 
-	delete barrelObject;
-
-	/*  vector<Actor*>::iterator it;
-	  for (it = Actors.begin(); it != Actors.end();it++)
-		  {
-			  delete (*it);
-			  it = Actors.erase(it);
-		  }*/
+	vector<Actor *>::iterator it;
+	for (it = Actors.begin(); it != Actors.end();)
+	{
+		delete (*it);
+		it = Actors.erase(it);
+	}
 }
 
 // Function that remove the ice when the player comes into contact of ice
@@ -120,12 +120,16 @@ bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 void StudentWorld::deleteDeadActor()
 {
 	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end(); it++)
-		if ((*it)->deadCheck())
+	for (it = Actors.begin(); it != Actors.end();)
+	{
+		if (!(*it)->aliveCheck())
 		{
 			delete (*it);
 			it = Actors.erase(it);
 		}
+		else
+			it++;
+	}
 }
 
 void StudentWorld::addActor(Actor *a)

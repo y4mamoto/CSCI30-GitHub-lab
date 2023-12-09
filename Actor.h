@@ -101,7 +101,7 @@ class BarrelOfOil : public ActivatingObject
 public:
     BarrelOfOil(int startX, int startY, StudentWorld *World) : ActivatingObject(IID_BARREL, startX, startY, right, 1.0, 2, World, SOUND_FOUND_OIL, true, false, false)
     {
-        setVisible(true);
+        setVisible(false);
         setAlive();
     }
     virtual ~BarrelOfOil() {}
