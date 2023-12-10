@@ -20,14 +20,18 @@ public:
 	StudentWorld(std::string assetDir) : GameWorld(assetDir) {}
 
 	virtual ~StudentWorld() {}
-
 	virtual int init();
 
 	virtual int move();
 
 	virtual void cleanUp();
 
-	virtual bool removeIce(int x, int y);
+	Iceman *IcemanObject()
+	{
+		return iceManObject;
+	}
+
+	virtual void removeIce(int x, int y);
 
 	virtual bool nearIcemanCheck(int x, int y, int radius);
 
@@ -35,13 +39,35 @@ public:
 
 	virtual void addActor(Actor *a);
 
+	virtual bool spawnRangeCheck(int x, int y, int radius);
+
 	virtual void setDisplayText();
+
+	virtual void pickupBarrel();
+
+	virtual int barrelLeft();
+
+	virtual void goldDrop(int x, int y);
+
+	virtual void revealAllNearbyObjects(int x, int y, int radius);
+
+	virtual void giveIceManSonar();
+
+	virtual void giveIceManWater();
+
+	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
 private:
 	Ice *iceObject[64][60];
 	Iceman *iceManObject;
 	vector<Actor *> Actors;
-	BarrelOfOil *barrelObject;
+	int num_barrel;
+	int barrelPickedUp;
+	BarrelOfOil *barrelObject[21];
+	int num_gold;
+	Gold *goldObject[5];
+	int num_boulders;
+	Boulder *boulderObject[9];
 };
 
 #endif // STUDENTWORLD_H_

@@ -60,13 +60,37 @@ bool ActivatingObject::isPickable()
     return pickable;
 }
 
+void ActivatingObject::setTicksToLive(int value)
+{
+    ticks = value;
+}
+
+int ActivatingObject::getTicks() const
+{
+    return ticks;
+}
+
+void ActivatingObject::removeTicks()
+{
+    ticks--;
+}
+
+bool ActivatingObject::isTemporary()
+{
+    return temp;
+}
+
+void ActivatingObject::setTemporary(bool temporary)
+{
+    temp = temporary;
+}
+
 void Iceman::dosomething()
 {
     if (deadCheck()) // Check if iceman is dead
         return;
 
     getWorld()->removeIce(getX(), getY()); // Remove the ice
-                                           // GameController::getInstance().playSound(SOUND_DIG);
 
     int ch;
     if (getWorld()->getKey(ch) == true)
@@ -114,8 +138,64 @@ void Iceman::dosomething()
             // User giveup
             setDead();
             break;
+        case KEY_PRESS_TAB:
+            if (gold > 0)
+            {
+                gold--;
+                getWorld()->goldDrop(getX(), getY());
+            }
+            break;
+        case 'z':
+        case 'Z':
+            if (sonar > 0)
+            {
+                sonar--;
+                getWorld()->revealAllNearbyObjects(getX(), getY(), 12);
+            }
         }
     }
+}
+
+unsigned int Iceman::getGold() const
+{
+    return gold;
+}
+
+void Iceman::addGold()
+{
+    gold++;
+}
+
+unsigned int Iceman::getSonar() const
+{
+    return sonar;
+}
+
+void Iceman::addSonar()
+{
+    sonar++;
+}
+
+unsigned int Iceman::getWater() const
+{
+    return water;
+}
+
+void Iceman::addWater()
+{
+    water += 5;
+}
+
+void Squirt::dosomething()
+{
+    if (distance == 4)
+        setDead();
+}
+
+void Boulder::dosomething()
+{
+    if (deadCheck())
+        return;
 }
 
 void BarrelOfOil::dosomething()
@@ -132,5 +212,78 @@ void BarrelOfOil::dosomething()
         setDead();
         GameController::getInstance().playSound(SOUND_FOUND_OIL);
         getWorld()->increaseScore(1000);
+        getWorld()->pickupBarrel();
     }
+}
+
+void Gold::dosomething()
+{
+    if (deadCheck())
+        return;
+
+    if (isTemporary())
+    {
+        setPickup(false);
+        setVisible(true);
+    }
+
+    if (getWorld()->nearIcemanCheck(getX(), getY(), 4))
+    {
+        setVisible(true);
+    }
+    if (isPickable() && getWorld()->nearIcemanCheck(getX(), getY(), 3))
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->increaseScore(10);
+        getWorld()->IcemanObject()->addGold();
+    }
+
+    if (!isPickable())
+    {
+        if (getTicks() == 0)
+            setDead();
+
+        removeTicks();
+    }
+}
+
+void SonarKit::dosomething()
+{
+    if (deadCheck())
+        return;
+
+    if (getWorld()->nearIcemanCheck(getX(), getY(), 3))
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->giveIceManSonar();
+        getWorld()->increaseScore(75);
+    }
+
+    if (getTicks() == 0)
+    {
+        setDead();
+    }
+
+    removeTicks();
+}
+
+void WaterPool::dosomething()
+{
+    if (deadCheck())
+        return;
+
+    if (getWorld()->nearIcemanCheck(getX(), getY(), 3))
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->giveIceManWater();
+        getWorld()->increaseScore(100);
+    }
+    if (getTicks() == 0)
+    {
+        setDead();
+    }
+    removeTicks();
 }
