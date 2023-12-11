@@ -156,6 +156,13 @@ void StudentWorld::removeIce(int x, int y)
 					iceObject[i][j] = nullptr;
 				}
 		}
+    for (int i = 30; i < 34; i++)                   //implementation for chasm
+        for (int j = 10; j < 60; j++)
+        {
+            delete iceObject[i][j];                 //sets ice in line of chasm to null
+            iceObject[i][j] = nullptr;
+        }
+}		
 }
 
 bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
