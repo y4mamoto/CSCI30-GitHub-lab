@@ -86,7 +86,10 @@ int StudentWorld::move()
 		{
 			int x = random() % 61;
 			int y = random() % 57;
-			addActor(new WaterPool(x, y, this, ticks));
+			if (noIceCheck(x, y))
+			{
+				addActor(new WaterPool(x, y, this, ticks));
+			}
 		}
 	}
 
@@ -112,7 +115,10 @@ int StudentWorld::move()
 	deleteDeadActor();
 
 	if (barrelPickedUp == num_barrel)
+	{
+		GameController::getInstance().playSound(SOUND_FINISHED_LEVEL);
 		return GWSTATUS_FINISHED_LEVEL;
+	}
 
 	return GWSTATUS_CONTINUE_GAME;
 }
@@ -146,6 +152,7 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 void StudentWorld::removeIce(int x, int y)
 {
 	for (int i = 0; i < 64; i++)
+	{
 		for (int j = 0; j < 60; j++)
 		{
 			if (iceObject[i][j] != nullptr)
@@ -247,6 +254,16 @@ bool StudentWorld::spawnRangeCheck(int x, int y, int radius)
 	return true;
 }
 
+bool StudentWorld::noIceCheck(int x, int y)
+{
+	if (iceObject[x][y] == nullptr && iceObject[x + 3][y] == nullptr && iceObject[x][y + 3] == nullptr)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void StudentWorld::setDisplayText()
 {
 	int level = getLevel();
@@ -335,6 +352,5 @@ string StudentWorld::statsFormat(int level, int lives, int health, int water, in
 		break;
 	}
 	stats.append(scoreStr);
-	stats.append(spaces);
 	return stats;
 }
