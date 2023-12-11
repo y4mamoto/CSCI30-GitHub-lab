@@ -152,6 +152,12 @@ void Iceman::dosomething()
                 sonar--;
                 getWorld()->revealAllNearbyObjects(getX(), getY(), 12);
             }
+        case KEY_PRESS_SPACE:
+            if (water > 0)
+            {
+                water--;
+                GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+            }
         }
     }
 }
@@ -236,7 +242,7 @@ void Gold::dosomething()
         setDead();
         GameController::getInstance().playSound(SOUND_GOT_GOODIE);
         getWorld()->increaseScore(10);
-        getWorld()->IcemanObject()->addGold();
+        getWorld()->giveIcemanGold();
     }
 
     if (!isPickable())

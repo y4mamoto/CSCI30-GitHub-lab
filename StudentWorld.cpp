@@ -30,6 +30,8 @@ int StudentWorld::init()
 	for (int i = 0; i < num_barrel;)
 	{
 		int x = random() % 61;
+		while (x >= 27 && x <= 37)
+			x = random() % 61;
 		int y = random() % 57;
 		if (spawnRangeCheck(x, y, 6))
 		{
@@ -43,6 +45,8 @@ int StudentWorld::init()
 	for (int i = 0; i < num_gold;)
 	{
 		int x = random() % 61;
+		while (x >= 27 && x <= 37)
+			x = random() % 61;
 		int y = random() % 57;
 		if (spawnRangeCheck(x, y, 6))
 		{
@@ -56,6 +60,8 @@ int StudentWorld::init()
 	for (int i = 0; i < num_boulders;)
 	{
 		int x = random() % 61;
+		while (x >= 27 && x <= 37)
+			x = random() % 61;
 		int y = random() % 37 + 20;
 		if (spawnRangeCheck(x, y, 6))
 		{
@@ -74,6 +80,7 @@ int StudentWorld::move()
 {
 	setDisplayText();
 
+	int probabilityOfHardcore = min<int>(90, getLevel() * 10 + 30);
 	int G = getLevel() * 25 + 300;
 
 	if (random() % G + 1 <= 1)
@@ -93,8 +100,7 @@ int StudentWorld::move()
 		}
 	}
 
-	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end(); it++)
+	for (auto it = Actors.begin(); it != Actors.end(); it++)
 	{
 		if ((*it)->aliveCheck())
 		{
@@ -140,8 +146,8 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 
 	delete iceManObject; // Delete Iceman
 
-	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end();)
+	// Delete all remaining actors
+	for (auto it = Actors.begin(); it != Actors.end();)
 	{
 		delete (*it);
 		it = Actors.erase(it);
@@ -163,15 +169,14 @@ void StudentWorld::removeIce(int x, int y)
 					iceObject[i][j] = nullptr;
 				}
 		}
-    for (int i = 30; i < 34; i++)                   //implementation for chasm
-        for (int j = 10; j < 60; j++)
-        {
-            delete iceObject[i][j];                 //sets ice in line of chasm to null
-            iceObject[i][j] = nullptr;
-        }
-}		
+		for (int i = 30; i < 34; i++) // implementation for chasm
+			for (int j = 10; j < 60; j++)
+			{
+				delete iceObject[i][j]; // sets ice in line of chasm to null
+				iceObject[i][j] = nullptr;
+			}
+	}
 }
-
 bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 {
 	int priorRadiusCalc;
@@ -184,8 +189,7 @@ bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 
 void StudentWorld::deleteDeadActor()
 {
-	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end();)
+	for (auto it = Actors.begin(); it != Actors.end();)
 	{
 		if ((*it)->deadCheck())
 		{
@@ -220,8 +224,8 @@ void StudentWorld::goldDrop(int x, int y)
 void StudentWorld::revealAllNearbyObjects(int x, int y, int radius)
 {
 	GameController::getInstance().playSound(SOUND_SONAR);
-	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end(); it++)
+
+	for (auto it = Actors.begin(); it != Actors.end(); it++)
 	{
 		double preDistance = pow((*it)->getX() - x, 2) + pow((*it)->getY() - y, 2);
 		if (sqrt(preDistance) <= radius)
@@ -229,6 +233,11 @@ void StudentWorld::revealAllNearbyObjects(int x, int y, int radius)
 			(*it)->GraphObject::setVisible(true);
 		}
 	}
+}
+
+void StudentWorld::giveIcemanGold()
+{
+	iceManObject->addGold();
 }
 
 void StudentWorld::giveIceManSonar()
@@ -243,8 +252,7 @@ void StudentWorld::giveIceManWater()
 
 bool StudentWorld::spawnRangeCheck(int x, int y, int radius)
 {
-	vector<Actor *>::iterator it;
-	for (it = Actors.begin(); it != Actors.end(); it++)
+	for (auto it = Actors.begin(); it != Actors.end(); it++)
 	{
 		int preDistance = pow((*it)->getX() - x, 2) + pow((*it)->getY() - y, 2);
 		if (sqrt(preDistance) <= radius)
@@ -264,12 +272,17 @@ bool StudentWorld::noIceCheck(int x, int y)
 	return false;
 }
 
+void StudentWorld::decrementSpawnTicks()
+{
+	protester_ticks--;
+}
+
 void StudentWorld::setDisplayText()
 {
 	int level = getLevel();
 	int lives = getLives();
 	int health = iceManObject->getHealth() * 10;
-	int water = IcemanObject()->getWater();
+	int water = iceManObject->getWater();
 	int gold = iceManObject->getGold();
 	int barrelIsLeft = barrelLeft();
 	int sonarAMT = iceManObject->getSonar();

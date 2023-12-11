@@ -26,11 +26,6 @@ public:
 
 	virtual void cleanUp();
 
-	Iceman *IcemanObject()
-	{
-		return iceManObject;
-	}
-
 	virtual void removeIce(int x, int y);
 
 	virtual bool nearIcemanCheck(int x, int y, int radius);
@@ -51,11 +46,15 @@ public:
 
 	virtual void revealAllNearbyObjects(int x, int y, int radius);
 
+	virtual void giveIcemanGold();
+
 	virtual void giveIceManSonar();
 
 	virtual void giveIceManWater();
 
 	virtual bool noIceCheck(int x, int y);
+
+	virtual void decrementSpawnTicks();
 
 	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
@@ -70,6 +69,8 @@ private:
 	Gold *goldObject[5];
 	int num_boulders;
 	Boulder *boulderObject[9];
+	int num_protester;
+	int protester_ticks;
 };
 
 #endif // STUDENTWORLD_H_
