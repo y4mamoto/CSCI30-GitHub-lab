@@ -161,13 +161,19 @@ void StudentWorld::removeIce(int x, int y)
 	{
 		for (int j = 0; j < 60; j++)
 		{
-			if (iceObject[i][j] != nullptr)
-				if (iceObject[i][j]->getX() >= x && iceObject[i][j]->getX() <= x + 3 && iceObject[i][j]->getY() >= y && iceObject[i][j]->getY() <= y + 3)
+			Ice *icePoint = iceObject[i][j];
+			if (icePoint != nullptr)
+			{
+				int currentX = icePoint->getX();
+				int currentY = icePoint->getY();
+
+				if (currentX >= x && currentX <= x + 3 && currentY >= y && currentY <= y + 3)
 				{
 					GameController::getInstance().playSound(SOUND_DIG);
 					delete iceObject[i][j];
 					iceObject[i][j] = nullptr;
 				}
+			}
 		}
 		for (int i = 30; i < 34; i++) // implementation for chasm
 			for (int j = 10; j < 60; j++)
@@ -274,35 +280,37 @@ bool StudentWorld::noIceCheck(int x, int y)
 
 bool StudentWorld::boulderCheck(int x, int y, GraphObject::Direction dir)
 {
-	for (int i = 0; i < num_boulders; i++)
+	for (int i = 0; i < num_boulders; ++i)
 	{
+		int boulderX = boulderObject[i]->getX();
+		int boulderY = boulderObject[i]->getY();
 
 		switch (dir)
 		{
 
 		case GraphObject::right:
 
-			if (boulderObject[i]->getX() == x + 3 && boulderObject[i]->getY() >= y - 3 && boulderObject[i]->getY() <= y + 3)
+			if (boulderX == x + 3 && inRangeCheck(boulderY, y, 3))
 			{
 				return true;
 			}
 			break;
 
 		case GraphObject::left:
-			if (boulderObject[i]->getX() == x && boulderObject[i]->getY() >= y - 3 && boulderObject[i]->getY() <= y + 3)
+			if (boulderX == x && inRangeCheck(boulderY, y, 3))
 			{
 				return true;
 			}
 			break;
 
 		case GraphObject::up:
-			if (boulderObject[i]->getY() == y + 3 && boulderObject[i]->getX() >= x - 3 && boulderObject[i]->getX() <= x + 3)
+			if (boulderY == y + 3 && inRangeCheck(boulderX, x, 3))
 			{
 				return true;
 			}
 			break;
 		case GraphObject::down:
-			if (boulderObject[i]->getY() == y && boulderObject[i]->getX() >= x - 3 && boulderObject[i]->getX() <= x + 3)
+			if (boulderY == y && inRangeCheck(boulderX, x, 3))
 			{
 				return true;
 			}
@@ -314,7 +322,17 @@ bool StudentWorld::boulderCheck(int x, int y, GraphObject::Direction dir)
 	return false;
 }
 
-void StudentWorld::squirt(int x, int y, GraphObject::Direction dir)
+bool StudentWorld::inRangeCheck(int value, int target, int range)
+{
+	if (value >= target - range && value <= target + range)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+void StudentWorld::generateSquirt(int x, int y, GraphObject::Direction dir)
 {
 	addActor(new Squirt(x, y, dir, this));
 }

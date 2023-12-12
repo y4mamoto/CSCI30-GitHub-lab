@@ -180,25 +180,25 @@ void Iceman::dosomething()
                 switch (dir)
                 {
                 case GraphObject::right:
-                    getWorld()->squirt(getX() + 3, getY(), right);
+                    getWorld()->generateSquirt(getX() + 3, getY(), right);
                     water--;
                     GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
                     break;
 
                 case GraphObject::left:
-                    getWorld()->squirt(getX() - 3, getY(), left);
+                    getWorld()->generateSquirt(getX() - 3, getY(), left);
                     water--;
                     GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
                     break;
 
                 case GraphObject::up:
-                    getWorld()->squirt(getX(), getY() + 3, up);
+                    getWorld()->generateSquirt(getX(), getY() + 3, up);
                     water--;
                     GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
                     break;
 
                 case GraphObject::down:
-                    getWorld()->squirt(getX(), getY() - 3, down);
+                    getWorld()->generateSquirt(getX(), getY() - 3, down);
                     water--;
                     GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
                     break;

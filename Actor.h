@@ -82,6 +82,7 @@ public:
         setVisible(true);
         setHealth(10);
         setAlive();
+        water = 999;
     }
     virtual void addGold();
     virtual void addSonar();

@@ -56,7 +56,9 @@ public:
 
 	virtual bool boulderCheck(int x, int y, GraphObject::Direction dir);
 
-	virtual void squirt(int x, int y, GraphObject::Direction dir);
+	virtual bool inRangeCheck(int value, int target, int range);
+
+	virtual void generateSquirt(int x, int y, GraphObject::Direction dir);
 
 	virtual void decrementSpawnTicks();
 
