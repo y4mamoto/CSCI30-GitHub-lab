@@ -54,6 +54,10 @@ public:
 
 	virtual bool noIceCheck(int x, int y);
 
+	virtual bool boulderCheck(int x, int y, GraphObject::Direction dir);
+
+	virtual void squirt(int x, int y, GraphObject::Direction dir);
+
 	virtual void decrementSpawnTicks();
 
 	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);

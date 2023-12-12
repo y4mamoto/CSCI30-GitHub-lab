@@ -272,6 +272,53 @@ bool StudentWorld::noIceCheck(int x, int y)
 	return false;
 }
 
+bool StudentWorld::boulderCheck(int x, int y, GraphObject::Direction dir)
+{
+	for (int i = 0; i < num_boulders; i++)
+	{
+
+		switch (dir)
+		{
+
+		case GraphObject::right:
+
+			if (boulderObject[i]->getX() == x + 3 && boulderObject[i]->getY() >= y - 3 && boulderObject[i]->getY() <= y + 3)
+			{
+				return true;
+			}
+			break;
+
+		case GraphObject::left:
+			if (boulderObject[i]->getX() == x && boulderObject[i]->getY() >= y - 3 && boulderObject[i]->getY() <= y + 3)
+			{
+				return true;
+			}
+			break;
+
+		case GraphObject::up:
+			if (boulderObject[i]->getY() == y + 3 && boulderObject[i]->getX() >= x - 3 && boulderObject[i]->getX() <= x + 3)
+			{
+				return true;
+			}
+			break;
+		case GraphObject::down:
+			if (boulderObject[i]->getY() == y && boulderObject[i]->getX() >= x - 3 && boulderObject[i]->getX() <= x + 3)
+			{
+				return true;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	return false;
+}
+
+void StudentWorld::squirt(int x, int y, GraphObject::Direction dir)
+{
+	addActor(new Squirt(x, y, dir, this));
+}
+
 void StudentWorld::decrementSpawnTicks()
 {
 	protester_ticks--;

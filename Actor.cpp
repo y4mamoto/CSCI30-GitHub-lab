@@ -98,6 +98,11 @@ void Iceman::dosomething()
         switch (ch)
         {
         case KEY_PRESS_LEFT:
+            if (getWorld()->boulderCheck(getX() - 3, getY(), left))
+            {
+                moveTo(getX(), getY());
+                break;
+            }
             if (getDirection() != left)
                 setDirection(left);
             else if (getX() >= 1)
@@ -109,6 +114,11 @@ void Iceman::dosomething()
             break;
 
         case KEY_PRESS_RIGHT:
+            if (getWorld()->boulderCheck(getX(), getY(), right))
+            {
+                moveTo(getX(), getY());
+                break;
+            }
             if (getDirection() != right)
                 setDirection(right);
             else if (getX() <= 59)
@@ -118,6 +128,11 @@ void Iceman::dosomething()
             break;
 
         case KEY_PRESS_UP:
+            if (getWorld()->boulderCheck(getX(), getY(), up))
+            {
+                moveTo(getX(), getY());
+                break;
+            }
             if (getDirection() != up)
                 setDirection(up);
             else if (getY() <= 59)
@@ -127,6 +142,11 @@ void Iceman::dosomething()
             break;
 
         case KEY_PRESS_DOWN:
+            if (getWorld()->boulderCheck(getX(), getY() - 3, down))
+            {
+                moveTo(getX(), getY());
+                break;
+            }
             if (getDirection() != down)
                 setDirection(down);
             else if (getY() >= 1)
@@ -153,10 +173,38 @@ void Iceman::dosomething()
                 getWorld()->revealAllNearbyObjects(getX(), getY(), 12);
             }
         case KEY_PRESS_SPACE:
+            Direction dir;
+            dir = getDirection();
             if (water > 0)
             {
-                water--;
-                GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+                switch (dir)
+                {
+                case GraphObject::right:
+                    getWorld()->squirt(getX() + 3, getY(), right);
+                    water--;
+                    GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+                    break;
+
+                case GraphObject::left:
+                    getWorld()->squirt(getX() - 3, getY(), left);
+                    water--;
+                    GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+                    break;
+
+                case GraphObject::up:
+                    getWorld()->squirt(getX(), getY() + 3, up);
+                    water--;
+                    GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+                    break;
+
+                case GraphObject::down:
+                    getWorld()->squirt(getX(), getY() - 3, down);
+                    water--;
+                    GameController::getInstance().playSound(SOUND_PLAYER_SQUIRT);
+                    break;
+                default:
+                    break;
+                }
             }
         }
     }
@@ -194,8 +242,52 @@ void Iceman::addWater()
 
 void Squirt::dosomething()
 {
+
+    Direction dir;
+    dir = getDirection();
+
     if (distance == 4)
         setDead();
+
+    if (getWorld()->boulderCheck(getX(), getY(), getDirection()))
+        setDead();
+
+    if (getX() >= 60 || getX() <= 4 || getY() >= 63 || getY() <= 4)
+    {
+        setDead();
+    }
+
+    switch (dir)
+    {
+    case GraphObject::right:
+        moveTo(getX() + 1, getY());
+        incrementDistance();
+        break;
+    case GraphObject::left:
+        moveTo(getX() - 1, getY());
+        incrementDistance();
+        break;
+    case GraphObject::down:
+        moveTo(getX(), getY() - 1);
+        incrementDistance();
+        break;
+    case GraphObject::up:
+        moveTo(getX(), getY() + 1);
+        incrementDistance();
+        break;
+    default:
+        break;
+    }
+}
+
+void Squirt::setDistance(int value)
+{
+    distance = value;
+}
+
+void Squirt::incrementDistance()
+{
+    distance++;
 }
 
 void Boulder::dosomething()

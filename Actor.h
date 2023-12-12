@@ -147,10 +147,13 @@ public:
     {
         setVisible(true);
         setAlive();
+        setDistance(0);
     }
 
     virtual ~Squirt() {}
     virtual void dosomething();
+    virtual void incrementDistance();
+    virtual void setDistance(int value);
 
 private:
     int distance;
