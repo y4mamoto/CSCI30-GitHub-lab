@@ -56,6 +56,8 @@ public:
 
 	virtual bool boulderCheck(int x, int y, GraphObject::Direction dir);
 
+	virtual bool IceCheck(int x, int y, GraphObject::Direction dir);
+
 	virtual bool inRangeCheck(int value, int target, int range);
 
 	virtual void generateSquirt(int x, int y, GraphObject::Direction dir);
@@ -65,7 +67,7 @@ public:
 	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
 private:
-	Ice *iceObject[64][60];
+	Ice *iceObject[64][64];
 	Iceman *iceManObject;
 	vector<Actor *> Actors;
 	int num_barrel;
@@ -76,7 +78,9 @@ private:
 	int num_boulders;
 	Boulder *boulderObject[9];
 	int num_protester;
+	int max_protester;
 	int protester_ticks;
+	Protester *protesterObject[15];
 };
 
 #endif // STUDENTWORLD_H_

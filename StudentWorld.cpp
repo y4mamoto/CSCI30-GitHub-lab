@@ -83,6 +83,16 @@ int StudentWorld::move()
 	int probabilityOfHardcore = min<int>(90, getLevel() * 10 + 30);
 	int G = getLevel() * 25 + 300;
 
+	num_protester = 0;
+	max_protester = min<int>(15, 2 + getLevel() * 1.5);
+	protester_ticks = max<int>(25, 200 - getLevel());
+
+	if (num_protester == 0)
+	{
+		// protesterObject[0] = new Regular_Protester(60,60,this);
+		num_protester++;
+	}
+
 	if (random() % G + 1 <= 1)
 	{
 		int ticks = max<int>(100, 300 - 10 * getLevel());
@@ -157,36 +167,38 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 // Function that remove the ice when the player comes into contact of ice
 void StudentWorld::removeIce(int x, int y)
 {
-	for (int i = 0; i < 64; i++)
-	{
-		for (int j = 0; j < 60; j++)
+	for (int i = 60; i < 64; i++)
+		for (int j = 60; j < 64; j++)
 		{
-			Ice *icePoint = iceObject[i][j];
-			if (icePoint != nullptr)
-			{
-				int currentX = icePoint->getX();
-				int currentY = icePoint->getY();
-
-				if (currentX >= x && currentX <= x + 3 && currentY >= y && currentY <= y + 3)
-				{
-					GameController::getInstance().playSound(SOUND_DIG);
-					delete iceObject[i][j];
-					iceObject[i][j] = nullptr;
-				}
-			}
+			delete iceObject[i][j];
+			iceObject[i][j] = nullptr;
 		}
-		for (int i = 30; i < 34; i++) // implementation for chasm
-			for (int j = 10; j < 60; j++)
+
+	for (int i = x; i < x + 4; ++i)
+	{
+		for (int j = y; j < y + 4; ++j)
+		{
+			if (x >= 0 && x < 61 && y >= 0 && y < 60)
 			{
-				delete iceObject[i][j]; // sets ice in line of chasm to null
+				delete iceObject[i][j];
 				iceObject[i][j] = nullptr;
 			}
+		}
 	}
+
+	for (int i = 30; i < 34; i++) // implementation for chasm
+		for (int j = 10; j < 60; j++)
+		{
+			delete iceObject[i][j]; // sets ice in line of chasm to null
+			iceObject[i][j] = nullptr;
+		}
 }
 bool StudentWorld::nearIcemanCheck(int x, int y, int radius)
 {
+	int iceManX = iceManObject->getX();
+	int iceManY = iceManObject->getY();
 	int priorRadiusCalc;
-	priorRadiusCalc = pow(iceManObject->getX() - x, 2) + pow(iceManObject->getY() - y, 2);
+	priorRadiusCalc = pow(iceManX - x, 2) + pow(iceManY - y, 2);
 	if (sqrt(priorRadiusCalc) <= radius)
 		return true;
 
@@ -231,12 +243,12 @@ void StudentWorld::revealAllNearbyObjects(int x, int y, int radius)
 {
 	GameController::getInstance().playSound(SOUND_SONAR);
 
-	for (auto it = Actors.begin(); it != Actors.end(); it++)
+	for (auto &actor : Actors)
 	{
-		double preDistance = pow((*it)->getX() - x, 2) + pow((*it)->getY() - y, 2);
+		double preDistance = pow(actor->getX() - x, 2) + pow(actor->getY() - y, 2);
 		if (sqrt(preDistance) <= radius)
 		{
-			(*it)->GraphObject::setVisible(true);
+			actor->setVisible(true);
 		}
 	}
 }
@@ -270,14 +282,18 @@ bool StudentWorld::spawnRangeCheck(int x, int y, int radius)
 
 bool StudentWorld::noIceCheck(int x, int y)
 {
-	if (iceObject[x][y] == nullptr && iceObject[x + 3][y] == nullptr && iceObject[x][y + 3] == nullptr)
+
+	for (int i = 0; i < 4; i++)
 	{
-		return true;
+		for (int j = 0; j < 4; j++)
+		{
+			Ice *icePoint = iceObject[x + i][y + j];
+			if (icePoint != nullptr)
+				return false;
+		}
 	}
-
-	return false;
+	return true;
 }
-
 bool StudentWorld::boulderCheck(int x, int y, GraphObject::Direction dir)
 {
 	for (int i = 0; i < num_boulders; ++i)
@@ -319,6 +335,30 @@ bool StudentWorld::boulderCheck(int x, int y, GraphObject::Direction dir)
 			break;
 		}
 	}
+	return false;
+}
+
+bool StudentWorld::IceCheck(int x, int y, GraphObject::Direction dir)
+{
+	switch (dir)
+	{
+	case GraphObject::right:
+		x += 1;
+		break;
+	case GraphObject::left:
+		x -= 1;
+		break;
+	case GraphObject::up:
+		y += 1;
+		break;
+	case GraphObject::down:
+		y -= 1;
+		break;
+	default:
+		break;
+	}
+	if (iceObject[x][y] != nullptr)
+		return true;
 	return false;
 }
 

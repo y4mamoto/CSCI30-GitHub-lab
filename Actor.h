@@ -202,4 +202,31 @@ public:
     virtual ~WaterPool() {}
     virtual void dosomething();
 };
+
+class Protester : public Agent
+{
+public:
+    Protester(int imageId, int startX, int startY, Direction startDir, float size, unsigned int depth, int state, StudentWorld *world) : Agent(imageId, startX, startY, startDir, size, depth, world) {}
+
+    void setTicksToNextMove(int ticks);
+    void setProtesterState(int states);
+
+private:
+    int Protester_Ticks;
+    int protester_states; // 0 is regualar state, 1 is resting state, 2 is return to base
+    int stepsToTake;
+};
+
+class Regular_Protester : public Protester
+{
+public:
+    Regular_Protester(int startX, int startY, StudentWorld *World) : Protester(IID_PROTESTER, 60, 60, left, 1.0, 0, 0, World)
+    {
+        setVisible(true);
+        setHealth(5);
+        setProtesterState(0);
+    }
+    virtual ~Regular_Protester() {}
+    virtual void doSomething();
+};
 #endif // ACTOR_H_

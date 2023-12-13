@@ -98,7 +98,7 @@ void Iceman::dosomething()
         switch (ch)
         {
         case KEY_PRESS_LEFT:
-            if (getWorld()->boulderCheck(getX() - 3, getY(), left))
+            if ((getWorld()->boulderCheck(getX(), getY(), left)))
             {
                 moveTo(getX(), getY());
                 break;
@@ -114,7 +114,7 @@ void Iceman::dosomething()
             break;
 
         case KEY_PRESS_RIGHT:
-            if (getWorld()->boulderCheck(getX(), getY(), right))
+            if ((getWorld()->boulderCheck(getX(), getY(), right)))
             {
                 moveTo(getX(), getY());
                 break;
@@ -171,6 +171,7 @@ void Iceman::dosomething()
             {
                 sonar--;
                 getWorld()->revealAllNearbyObjects(getX(), getY(), 12);
+                break;
             }
         case KEY_PRESS_SPACE:
             Direction dir;
@@ -249,19 +250,21 @@ void Squirt::dosomething()
     if (distance == 4)
         setDead();
 
-    if (getWorld()->boulderCheck(getX(), getY(), getDirection()))
+    if ((getWorld()->boulderCheck(getX(), getY(), dir)) || (getWorld()->IceCheck(getX(), getY(), dir)))
         setDead();
 
-    if (getX() >= 60 || getX() <= 4 || getY() >= 63 || getY() <= 4)
+    if (getX() >= 63 || getX() <= 0 || getY() >= 63 || getY() <= 0)
     {
-        setDead();
+        return;
     }
 
     switch (dir)
     {
     case GraphObject::right:
+
         moveTo(getX() + 1, getY());
         incrementDistance();
+
         break;
     case GraphObject::left:
         moveTo(getX() - 1, getY());
@@ -384,4 +387,19 @@ void WaterPool::dosomething()
         setDead();
     }
     removeTicks();
+}
+
+void Protester::setTicksToNextMove(int ticks)
+{
+    Protester_Ticks = ticks;
+}
+
+void Protester::setProtesterState(int states)
+{
+    Protester_Ticks = states;
+}
+
+void Regular_Protester::doSomething()
+{
+    return;
 }
