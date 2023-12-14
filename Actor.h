@@ -136,7 +136,8 @@ public:
 
     virtual ~Boulder() {}
     virtual void dosomething();
-    // virtual void canActorPassThroughMe() const;
+    virtual void setState(int state);
+
 private:
     bool stat = true;
 };
