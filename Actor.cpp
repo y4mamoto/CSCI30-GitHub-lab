@@ -85,6 +85,11 @@ void Iceman::dosomething()
     if (deadCheck()) // Check if iceman is dead
         return;
 
+    if (getHealth() == 0)
+    {
+        setDead();
+    }
+
     getWorld()->removeIce(getX(), getY()); // Remove the ice
 
     int ch;
@@ -291,16 +296,56 @@ void Squirt::incrementDistance()
 void Boulder::dosomething()
 {
     if (deadCheck())
+    {
         return;
-    if (getWorld()->noIceCheck(getX(), getY()-1) == true){
+    }
+    if (!floorIceCheck())
+    {
+        setState(1);
+    }
+
+    if (boulder_states == 1 && boulder_ticks < 30)
+    {
+        boulder_ticks++;
+    }
+
+    if (boulder_states == 1 && boulder_ticks >= 30)
+    {
+        setState(2);
+        GameController::getInstance().playSound(SOUND_FALLING_ROCK);
+    }
+
+    if (boulder_states == 2)
+    {
+        if (getWorld()->nearIcemanCheck(getX(), getY(), 3))
+        {
+            getWorld()->boulderDamage(getX(), getY());
+            setDead();
+        }
+        if (getWorld()->IceCheck(getX(), getY() - 1, down) == true)
+        {
+            setDead();
+            return;
+        }
+        moveTo(getX(), getY() - 1);
     }
 }
 
-void Boulder::setState(int stateOfBoulder){
-    stateOfBoulder = 0;
-    if (stateOfBoulder == 1){
-        moveTo(getX(), getY()-1);
+void Boulder::setState(int stateOfBoulder)
+{
+    boulder_states = stateOfBoulder;
+}
+
+bool Boulder::floorIceCheck()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        if (getWorld()->IceCheck(getX() + i, getY(), down))
+        {
+            return true;
+        }
     }
+    return false;
 }
 
 void BarrelOfOil::dosomething()
@@ -393,10 +438,6 @@ void WaterPool::dosomething()
     removeTicks();
 }
 
-/*Protester::Protester(int startX, int startY, int ImageId, StudentWorld*world ) : Agent(imageID, startX, startY, Direction startDir, float size, unsigned int depth , world){
-
-}*/
-
 void Protester::setTicksToNextMove(int ticks)
 {
     Protester_Ticks = ticks;
@@ -407,7 +448,60 @@ void Protester::setProtesterState(int states)
     Protester_Ticks = states;
 }
 
+int Protester::getStates()
+{
+    return protester_states;
+}
+
+int Protester::getRestingTicks()
+{
+    return restting_ticks;
+}
+
+void Protester::decrementRestingTicks()
+{
+    restting_ticks--;
+}
+
+int Protester::getDistanceToTravel()
+{
+    return numSquaresToMoveINCurrentDirection;
+}
+
+void Protester::decrementDistance()
+{
+    numSquaresToMoveINCurrentDirection--;
+}
+
 void Regular_Protester::dosomething()
 {
-    moveTo(getX() + 1, getY());
+    if (deadCheck())
+    {
+        return;
+    }
+
+    if (getStates() == 0 && getDistanceToTravel() == 0)
+    {
+    }
+
+    if (getStates() == 1 && getRestingTicks() != 0)
+    {
+        decrementRestingTicks();
+    }
+
+    Direction dir;
+    dir = getDirection();
+    if (getStates() == 0)
+    {
+        switch (dir)
+        {
+        case GraphObject::left:
+            if (!getWorld()->IceCheck(getX() - 1, getY(), left))
+                moveTo(getX() - 1, getY());
+            break;
+
+        default:
+            break;
+        }
+    }
 }

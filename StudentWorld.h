@@ -64,6 +64,8 @@ public:
 
 	virtual void decrementSpawnTicks();
 
+	virtual void boulderDamage(int x, int y);
+
 	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
 private:

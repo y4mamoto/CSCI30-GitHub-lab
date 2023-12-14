@@ -43,8 +43,6 @@ public:
         setVisible(true);
     }
 
-    // virtual void dosomething();
-    virtual void addGold() = 0;
     void setHealth(int health);
     int getHealth();
     void damage(int val);
@@ -132,14 +130,18 @@ public:
     Boulder(int startX, int startY, StudentWorld *world) : Actor(IID_BOULDER, startX, startY, down, 1.0, 1, world)
     {
         setVisible(true);
+        setAlive();
     }
 
     virtual ~Boulder() {}
     virtual void dosomething();
-    virtual void setState(int state);
-
+    void setState(int state);
+    int getState();
+    bool floorIceCheck();
+    // virtual void canActorPassThroughMe() const;
 private:
-    bool stat = true;
+    int boulder_states;
+    int boulder_ticks;
 };
 
 class Squirt : public Actor
@@ -207,13 +209,19 @@ public:
 class Protester : public Agent
 {
 public:
-    Protester(int startX, int startY, int imageID, StudentWorld *world);
-    void virtual dosomething();
+    Protester(int startX, int startY, int imageID, StudentWorld *world) : Agent(imageID, startX, startY, left, 1.0, 0, world) {}
     void setTicksToNextMove(int ticks);
     void setProtesterState(int states);
+    int getStates();
+    int getRestingTicks();
+    int getDistanceToTravel();
+    void decrementRestingTicks();
+    void decrementDistance();
 
 private:
     int Protester_Ticks;
+    int restting_ticks;
+    int numSquaresToMoveINCurrentDirection;
     int protester_states; // 0 is regualar state, 1 is resting state, 2 is return to base
     int stepsToTake;
 };
@@ -221,9 +229,10 @@ private:
 class Regular_Protester : public Protester
 {
 public:
-    Regular_Protester(StudentWorld *World) : Protester(IID_PROTESTER, 60, 60, World)
+    Regular_Protester(StudentWorld *World) : Protester(60, 60, IID_PROTESTER, World)
     {
         setVisible(true);
+        setAlive();
         setHealth(5);
         setProtesterState(0);
     }
@@ -232,4 +241,5 @@ public:
 
 private:
 };
+
 #endif // ACTOR_H_

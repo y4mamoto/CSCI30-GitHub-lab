@@ -19,6 +19,7 @@ GameWorld *createStudentWorld(string assetDir)
 int StudentWorld::init()
 { // Setup the level
 	barrelPickedUp = 0;
+	num_protester = 0;
 
 	for (int x = 0; x < 64; x++)
 		for (int y = 0; y < 60; y++)
@@ -71,6 +72,12 @@ int StudentWorld::init()
 			i++;
 		}
 	}
+	if (num_protester == 0)
+	{
+		protesterObject[0] = new Regular_Protester(this);
+		addActor(protesterObject[0]);
+		num_protester++;
+	}
 
 	iceManObject = new Iceman(30, 60, this); // Create Iceman
 	return GWSTATUS_CONTINUE_GAME;
@@ -83,13 +90,13 @@ int StudentWorld::move()
 	int probabilityOfHardcore = min<int>(90, getLevel() * 10 + 30);
 	int G = getLevel() * 25 + 300;
 
-	num_protester = 0;
 	max_protester = min<int>(15, 2 + getLevel() * 1.5);
 	protester_ticks = max<int>(25, 200 - getLevel());
 
 	if (num_protester == 0)
 	{
-		// protesterObject[0] = new Regular_Protester(60,60,this);
+		protesterObject[0] = (new Regular_Protester(this));
+		addActor(protesterObject[0]);
 		num_protester++;
 	}
 
@@ -380,6 +387,14 @@ void StudentWorld::generateSquirt(int x, int y, GraphObject::Direction dir)
 void StudentWorld::decrementSpawnTicks()
 {
 	protester_ticks--;
+}
+
+void StudentWorld::boulderDamage(int x, int y)
+{
+	if (nearIcemanCheck(x, y - 1, 3))
+	{
+		iceManObject->damage(10);
+	}
 }
 
 void StudentWorld::setDisplayText()
