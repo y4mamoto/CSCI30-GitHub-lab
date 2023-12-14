@@ -50,11 +50,6 @@ void ActivatingObject::setPickup(bool pickup)
     pickable = pickup;
 }
 
-bool ActivatingObject::isVisible()
-{
-    return visible;
-}
-
 bool ActivatingObject::isPickable()
 {
     return pickable;
@@ -389,6 +384,10 @@ void WaterPool::dosomething()
     removeTicks();
 }
 
+/*Protester::Protester(int startX, int startY, int ImageId, StudentWorld*world ) : Agent(imageID, startX, startY, Direction startDir, float size, unsigned int depth , world){
+
+}*/
+
 void Protester::setTicksToNextMove(int ticks)
 {
     Protester_Ticks = ticks;
@@ -399,7 +398,7 @@ void Protester::setProtesterState(int states)
     Protester_Ticks = states;
 }
 
-void Regular_Protester::doSomething()
+void Regular_Protester::dosomething()
 {
-    return;
+    moveTo(getX() + 1, getY());
 }

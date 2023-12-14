@@ -80,7 +80,7 @@ private:
 	int num_protester;
 	int max_protester;
 	int protester_ticks;
-	Protester *protesterObject[15];
+	Regular_Protester *regular_protesterObject[15];
 };
 
 #endif // STUDENTWORLD_H_

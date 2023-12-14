@@ -42,10 +42,12 @@ public:
     {
         setVisible(true);
     }
+
+    // virtual void dosomething();
     virtual void addGold() = 0;
-    virtual void setHealth(int health);
-    virtual int getHealth();
-    virtual void damage(int val);
+    void setHealth(int health);
+    int getHealth();
+    void damage(int val);
 
 private:
     int num_health;
@@ -56,7 +58,6 @@ class ActivatingObject : public Actor
 public:
     ActivatingObject(int imageID, int startX, int startY, Direction startDirection, float size, unsigned int depth, StudentWorld *World, int soundToPlay, bool activateOnPlayer, bool activateOnProtester, bool initallyActive) : Actor(imageID, startX, startY, startDirection, size, depth, World) {}
 
-    bool isVisible();
     bool isPickable();
     bool isTemporary();
     void setTemporary(bool temporary);
@@ -68,7 +69,6 @@ public:
 
 private:
     bool temp;
-    bool visible;
     bool pickable;
     int ticks;
 };
@@ -206,8 +206,8 @@ public:
 class Protester : public Agent
 {
 public:
-    Protester(int imageId, int startX, int startY, Direction startDir, float size, unsigned int depth, int state, StudentWorld *world) : Agent(imageId, startX, startY, startDir, size, depth, world) {}
-
+    Protester(int startX, int startY, int imageID, StudentWorld *world);
+    void virtual dosomething();
     void setTicksToNextMove(int ticks);
     void setProtesterState(int states);
 
@@ -220,13 +220,15 @@ private:
 class Regular_Protester : public Protester
 {
 public:
-    Regular_Protester(int startX, int startY, StudentWorld *World) : Protester(IID_PROTESTER, 60, 60, left, 1.0, 0, 0, World)
+    Regular_Protester(StudentWorld *World) : Protester(IID_PROTESTER, 60, 60, World)
     {
         setVisible(true);
         setHealth(5);
         setProtesterState(0);
     }
     virtual ~Regular_Protester() {}
-    virtual void doSomething();
+    virtual void dosomething();
+
+private:
 };
 #endif // ACTOR_H_

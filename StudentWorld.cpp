@@ -89,7 +89,7 @@ int StudentWorld::move()
 
 	if (num_protester == 0)
 	{
-		// protesterObject[0] = new Regular_Protester(60,60,this);
+		regular_protesterObject[0] = (new Regular_Protester(this));
 		num_protester++;
 	}
 
