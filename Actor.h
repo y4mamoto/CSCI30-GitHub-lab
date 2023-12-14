@@ -80,7 +80,7 @@ public:
         setVisible(true);
         setHealth(10);
         setAlive();
-        water = 999;
+        water = 5;
     }
     virtual void addGold();
     virtual void addSonar();
@@ -117,7 +117,7 @@ class BarrelOfOil : public ActivatingObject
 public:
     BarrelOfOil(int startX, int startY, StudentWorld *World) : ActivatingObject(IID_BARREL, startX, startY, right, 1.0, 2, World, SOUND_FOUND_OIL, true, false, false)
     {
-        setVisible(true);
+        setVisible(false);
         setAlive();
     }
     virtual ~BarrelOfOil() {}
@@ -167,7 +167,7 @@ class Gold : public ActivatingObject
 public:
     Gold(int startX, int startY, StudentWorld *world, bool temporary) : ActivatingObject(IID_GOLD, startX, startY, right, 1.0, 2, world, SOUND_GOT_GOODIE, true, true, false)
     {
-        setVisible(true);
+        setVisible(false);
         setPickup(true);
         setAlive();
         setTicksToLive(300);
@@ -215,8 +215,17 @@ public:
     int getStates();
     int getRestingTicks();
     int getDistanceToTravel();
+    int getWaitTicks();
+    int getWaitMoveTicks();
+    void setDistanceToTravel();
     void decrementRestingTicks();
     void decrementDistance();
+    void setWait();
+    void wait();
+    void resetWaitTicks();
+    void resetMove();
+    bool inFrontCheck();
+    virtual void bribed() = 0;
 
 private:
     int Protester_Ticks;
@@ -224,6 +233,9 @@ private:
     int numSquaresToMoveINCurrentDirection;
     int protester_states; // 0 is regualar state, 1 is resting state, 2 is return to base
     int stepsToTake;
+    int ticksToWaitBetweenMoves;
+    int waitTicks;
+    int restChangeDirTick;
 };
 
 class Regular_Protester : public Protester
@@ -238,6 +250,7 @@ public:
     }
     virtual ~Regular_Protester() {}
     virtual void dosomething();
+    virtual void bribed();
 
 private:
 };

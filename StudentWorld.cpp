@@ -174,9 +174,12 @@ void StudentWorld::cleanUp() // Delete the entire level after it is finish
 // Function that remove the ice when the player comes into contact of ice
 void StudentWorld::removeIce(int x, int y)
 {
+	GameController::getInstance().playSound(SOUND_DIG);
+
 	for (int i = 60; i < 64; i++)
 		for (int j = 60; j < 64; j++)
 		{
+
 			delete iceObject[i][j];
 			iceObject[i][j] = nullptr;
 		}
@@ -187,6 +190,7 @@ void StudentWorld::removeIce(int x, int y)
 		{
 			if (x >= 0 && x < 61 && y >= 0 && y < 60)
 			{
+
 				delete iceObject[i][j];
 				iceObject[i][j] = nullptr;
 			}
@@ -381,7 +385,8 @@ bool StudentWorld::inRangeCheck(int value, int target, int range)
 
 void StudentWorld::generateSquirt(int x, int y, GraphObject::Direction dir)
 {
-	addActor(new Squirt(x, y, dir, this));
+	squirtObject = new Squirt(x, y, dir, this);
+	addActor(squirtObject);
 }
 
 void StudentWorld::decrementSpawnTicks()
@@ -395,6 +400,63 @@ void StudentWorld::boulderDamage(int x, int y)
 	{
 		iceManObject->damage(10);
 	}
+}
+
+GraphObject::Direction StudentWorld::newDirection(int x, int y)
+{
+	GraphObject::Direction dir;
+	int random = rand() % 4 + 1;
+	if (random == 1)
+	{
+		dir = GraphObject::left;
+	}
+	else if (random == 2)
+	{
+		dir = GraphObject::right;
+	}
+	else if (random == 3)
+	{
+		dir = GraphObject::up;
+	}
+	else
+	{
+		dir = GraphObject::down;
+	}
+
+	switch (dir)
+	{
+	case GraphObject::left:
+		if (IceCheck(x - 1, y, GraphObject::left) || boulderCheck(x - 1, y, GraphObject::left) || x == 60)
+		{
+			return GraphObject::left;
+		}
+		else
+			return newDirection(x, y);
+		break;
+	case GraphObject::right:
+		if (IceCheck(x + 1, y, GraphObject::right) || boulderCheck(x + 1, y, GraphObject::right) || x == 0)
+			return GraphObject::right;
+		else
+			return newDirection(x, y);
+		break;
+	case GraphObject::up:
+		if (IceCheck(x, y + 1, GraphObject::up) || boulderCheck(x, y + 1, GraphObject::up) || y == 0)
+			return GraphObject::up;
+		else
+			return newDirection(x, y);
+		break;
+	case GraphObject::down:
+		if (IceCheck(x, y - 1, GraphObject::down) || (boulderCheck(x, y - 1, GraphObject::down) || y == 60))
+			return GraphObject::down;
+		else
+			return newDirection(x, y);
+		break;
+
+	default:
+		break;
+	}
+
+	return GraphObject::left;
 }
 
 void StudentWorld::setDisplayText()

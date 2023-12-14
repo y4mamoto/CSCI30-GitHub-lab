@@ -4,6 +4,7 @@
 #include "GameWorld.h"
 #include <algorithm>
 #include <utility>
+#include <queue>
 
 using namespace std;
 
@@ -465,12 +466,97 @@ void Protester::decrementRestingTicks()
 
 int Protester::getDistanceToTravel()
 {
-    return numSquaresToMoveINCurrentDirection;
+    return stepsToTake;
 }
 
 void Protester::decrementDistance()
 {
-    numSquaresToMoveINCurrentDirection--;
+    stepsToTake--;
+}
+
+void Protester::setWait()
+{
+    ticksToWaitBetweenMoves = max<int>(0, 3 - getWorld()->getLevel() / 4);
+}
+
+int Protester::getWaitMoveTicks()
+{
+    return ticksToWaitBetweenMoves;
+}
+
+int Protester::getWaitTicks()
+{
+    return waitTicks;
+}
+
+void Protester::wait()
+{
+    waitTicks++;
+}
+
+void Protester::resetWaitTicks()
+{
+    waitTicks = 0;
+}
+
+void Protester::resetMove()
+{
+    stepsToTake = 0;
+}
+
+void Protester::setDistanceToTravel()
+{
+    int setDistance = random() % 60;
+    while (setDistance < 8 || setDistance > 60)
+    {
+        setDistance = random() % 60;
+    }
+    stepsToTake = setDistance;
+}
+
+bool Protester::inFrontCheck()
+{
+    Direction dir;
+    dir = getDirection();
+
+    switch (dir)
+    {
+    case GraphObject::left:
+        if (getWorld()->IceCheck(getX() - 1, getY(), left) || getWorld()->boulderCheck(getX() - 1, getY(), left))
+        {
+            return true;
+        }
+        break;
+    case GraphObject::right:
+        if (getWorld()->IceCheck(getX() + 1, getY(), right) || getWorld()->boulderCheck(getX() + 1, getY(), right))
+        {
+            return true;
+        }
+        break;
+    case GraphObject::up:
+        if (getWorld()->IceCheck(getX(), getY() + 1, up) || getWorld()->boulderCheck(getX(), getY() + 1, right))
+        {
+            return true;
+        }
+        break;
+    case GraphObject::down:
+        if (getWorld()->IceCheck(getX(), getY() - 1, down) || getWorld()->boulderCheck(getX(), getY() - 1, left))
+        {
+            return true;
+        }
+        break;
+
+    default:
+        break;
+    }
+    return false;
+}
+
+void Regular_Protester::bribed()
+{
+    GameController::getInstance().playSound(SOUND_PROTESTER_FOUND_GOLD);
+    getWorld()->increaseScore(25);
+    setProtesterState(2);
 }
 
 void Regular_Protester::dosomething()
@@ -480,28 +566,89 @@ void Regular_Protester::dosomething()
         return;
     }
 
+    setWait();
+    Direction dir;
+    dir = getDirection();
+    if (getWaitMoveTicks() != getWaitTicks())
+    {
+        wait();
+        return;
+    }
+
+    if (getWaitTicks() == getWaitMoveTicks())
+    {
+        resetWaitTicks();
+    }
+
+    if (inFrontCheck() && getStates() == 0)
+    {
+        if (getDistanceToTravel() != 0)
+        {
+            resetMove();
+        }
+        dir = getWorld()->newDirection(getX(), getY());
+        setDirection(dir);
+        setDistanceToTravel();
+    }
+
     if (getStates() == 0 && getDistanceToTravel() == 0)
     {
+        setDistanceToTravel();
+        dir = getWorld()->newDirection(getX(), getY());
+        setDirection(dir);
     }
 
     if (getStates() == 1 && getRestingTicks() != 0)
     {
         decrementRestingTicks();
+        return;
     }
 
-    Direction dir;
-    dir = getDirection();
-    if (getStates() == 0)
+    if (getStates() == 0 && getDistanceToTravel() != 0)
     {
         switch (dir)
         {
         case GraphObject::left:
-            if (!getWorld()->IceCheck(getX() - 1, getY(), left))
+            if (!getWorld()->IceCheck(getX() - 1, getY(), left) && !getWorld()->boulderCheck(getX() - 1, getY(), left) && getX() > 0)
+            {
                 moveTo(getX() - 1, getY());
+                decrementDistance();
+            }
+            else
+                resetMove();
+            break;
+        case GraphObject::right:
+            if (!getWorld()->IceCheck(getX() + 1, getY(), right) && getWorld()->boulderCheck(getX() + 1, getY(), right) && getX() < 60)
+            {
+                moveTo(getX() + 1, getY());
+                decrementDistance();
+            }
+            else
+                resetMove();
+            break;
+        case GraphObject::up:
+            if (!getWorld()->IceCheck(getX(), getY() + 1, up) && !getWorld()->boulderCheck(getX(), getY() + 1, up) && getY() < 60)
+            {
+                moveTo(getX(), getY() + 1);
+                decrementDistance();
+            }
+            else
+                resetMove();
+            break;
+        case GraphObject::down:
+            if (!getWorld()->IceCheck(getX(), getY() - 1, down) && !getWorld()->boulderCheck(getX(), getY() - 1, down) && getY() > 0)
+            {
+                moveTo(getX(), getY() - 1);
+                decrementDistance();
+            }
+            else
+                resetMove();
             break;
 
         default:
             break;
         }
+
+        wait();
     }
 }

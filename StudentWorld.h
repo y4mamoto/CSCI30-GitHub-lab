@@ -66,6 +66,8 @@ public:
 
 	virtual void boulderDamage(int x, int y);
 
+	virtual GraphObject::Direction newDirection(int x, int y);
+
 	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
 private:
@@ -79,6 +81,7 @@ private:
 	Gold *goldObject[5];
 	int num_boulders;
 	Boulder *boulderObject[9];
+	Squirt *squirtObject;
 	int num_protester;
 	int max_protester;
 	int protester_ticks;
