@@ -609,40 +609,32 @@ void Regular_Protester::dosomething()
         switch (dir)
         {
         case GraphObject::left:
-            if (!getWorld()->IceCheck(getX() - 1, getY(), left) && !getWorld()->boulderCheck(getX() - 1, getY(), left) && getX() > 0)
+            if (!inFrontCheck() && getX() > 0)
             {
                 moveTo(getX() - 1, getY());
                 decrementDistance();
             }
-            else
-                resetMove();
             break;
         case GraphObject::right:
-            if (!getWorld()->IceCheck(getX() + 1, getY(), right) && getWorld()->boulderCheck(getX() + 1, getY(), right) && getX() < 60)
+            if (!inFrontCheck() && getX() < 60)
             {
                 moveTo(getX() + 1, getY());
                 decrementDistance();
             }
-            else
-                resetMove();
             break;
         case GraphObject::up:
-            if (!getWorld()->IceCheck(getX(), getY() + 1, up) && !getWorld()->boulderCheck(getX(), getY() + 1, up) && getY() < 60)
+            if (!inFrontCheck() && getY() < 60)
             {
                 moveTo(getX(), getY() + 1);
                 decrementDistance();
             }
-            else
-                resetMove();
             break;
         case GraphObject::down:
-            if (!getWorld()->IceCheck(getX(), getY() - 1, down) && !getWorld()->boulderCheck(getX(), getY() - 1, down) && getY() > 0)
+            if (!inFrontCheck() && getY() > 0)
             {
                 moveTo(getX(), getY() - 1);
                 decrementDistance();
             }
-            else
-                resetMove();
             break;
 
         default:
