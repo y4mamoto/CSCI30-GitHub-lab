@@ -16,71 +16,71 @@ using namespace std;
 class StudentWorld : public GameWorld
 {
 public:
-	// Generate the level
-	StudentWorld(std::string assetDir) : GameWorld(assetDir) {}
+    // Generate the level
+    StudentWorld(std::string assetDir) : GameWorld(assetDir) {}
 
-	virtual ~StudentWorld() {}
-	virtual int init();
+    virtual ~StudentWorld() {}
+    virtual int init();
 
-	virtual int move();
+    virtual int move();
 
-	virtual void cleanUp();
+    virtual void cleanUp();
 
-	virtual void removeIce(int x, int y);
+    virtual void removeIce(int x, int y);
 
-	virtual bool nearIcemanCheck(int x, int y, int radius);
+    virtual bool nearIcemanCheck(int x, int y, int radius);
 
-	virtual void deleteDeadActor();
+    virtual void deleteDeadActor();
 
-	virtual void addActor(Actor *a);
+    virtual void addActor(Actor *a);
 
-	virtual bool spawnRangeCheck(int x, int y, int radius);
+    virtual bool spawnRangeCheck(int x, int y, int radius);
 
-	virtual void setDisplayText();
+    virtual void setDisplayText();
 
-	virtual void pickupBarrel();
+    virtual void pickupBarrel();
 
-	virtual int barrelLeft();
+    virtual int barrelLeft();
 
-	virtual void goldDrop(int x, int y);
+    virtual void goldDrop(int x, int y);
 
-	virtual void revealAllNearbyObjects(int x, int y, int radius);
+    virtual void revealAllNearbyObjects(int x, int y, int radius);
 
-	virtual void giveIcemanGold();
+    virtual void giveIcemanGold();
 
-	virtual void giveIceManSonar();
+    virtual void giveIceManSonar();
 
-	virtual void giveIceManWater();
+    virtual void giveIceManWater();
 
-	virtual bool noIceCheck(int x, int y);
+    virtual bool noIceCheck(int x, int y);
 
-	virtual bool boulderCheck(int x, int y, GraphObject::Direction dir);
+    virtual bool boulderCheck(int x, int y, GraphObject::Direction dir);
 
-	virtual bool IceCheck(int x, int y, GraphObject::Direction dir);
+    virtual bool IceCheck(int x, int y, GraphObject::Direction dir);
 
-	virtual bool inRangeCheck(int value, int target, int range);
+    virtual bool inRangeCheck(int value, int target, int range);
 
-	virtual void generateSquirt(int x, int y, GraphObject::Direction dir);
+    virtual void generateSquirt(int x, int y, GraphObject::Direction dir);
 
-	virtual void decrementSpawnTicks();
+    virtual void decrementSpawnTicks();
 
-	virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
+    virtual string statsFormat(int Level, int lives, int health, int water, int gold, int BarrelisLeft, int Sonar, int Score);
 
 private:
-	Ice *iceObject[64][64];
-	Iceman *iceManObject;
-	vector<Actor *> Actors;
-	int num_barrel;
-	int barrelPickedUp;
-	BarrelOfOil *barrelObject[21];
-	int num_gold;
-	Gold *goldObject[5];
-	int num_boulders;
-	Boulder *boulderObject[9];
-	int num_protester;
-	int max_protester;
-	int protester_ticks;
-	Protester *protesterObject[15];
+    Ice *iceObject[64][64];
+    Iceman *iceManObject;
+    vector<Actor *> Actors;
+    int num_barrel;
+    int barrelPickedUp;
+    BarrelOfOil *barrelObject[21];
+    int num_gold;
+    Gold *goldObject[5];
+    int num_boulders;
+    Boulder *boulderObject[9];
+    int num_protester;
+    int max_protester;
+    int protester_ticks;
+    Protester *protesterObject[15];
 };
 
 #endif // STUDENTWORLD_H_

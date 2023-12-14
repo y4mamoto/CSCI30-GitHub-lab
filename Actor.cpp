@@ -297,6 +297,15 @@ void Boulder::dosomething()
 {
     if (deadCheck())
         return;
+    if (getWorld()->noIceCheck(getX(), getY()-1) == true){
+    }
+}
+
+void Boulder::setState(int stateOfBoulder){
+    stateOfBoulder = 0;
+    if (stateOfBoulder == 1){
+        moveTo(getX(), getY()-1);
+    }
 }
 
 void BarrelOfOil::dosomething()
